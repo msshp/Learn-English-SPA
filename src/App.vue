@@ -38,9 +38,9 @@
   <div v-if="mainPageVisibility">
     <div className="wrapper">
       <div class="sidenav" v-bind:class="{ sidenav_hidden: sidenavIsHidden }">
-        <div className="side-menu__btn" @click="sidenavToggle()">
+        <!-- <div className="side-menu__btn" @click="sidenavToggle()">
           <div className="icon-burger"></div>
-        </div>
+        </div> -->
         <nav className="sidenav__block">
           <div class="sidenav__block-menu">
             <button @click="openAccount()" v-bind:class="{ sidebtn_active: pages.accountPageVisibility }">
@@ -64,7 +64,7 @@
         </nav>
       </div>
       <div id="page-content" class="page-content" v-bind:class="{ content_compressed: contentIsCompressed }">
-        <TheAccountPage v-if="pages.accountPageVisibility" />
+        <TheAccountPage v-if="pages.accountPageVisibility" @openList="openList" />
         <ThePlaylistPage v-if="pages.playlistPageVisibility" />
         <ThePlaylistsPage v-if="pages.listPageVisibility" />
       </div>
@@ -322,8 +322,7 @@ export default {
 /* структура страниц */
 
 .page-content__container {
-  padding: 86px 40px 24px 40px;
   background-color: #F8F9F2;
-  position: relative;
+  padding: 40px 24px;
 }
 </style>
