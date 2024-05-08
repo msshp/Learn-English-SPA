@@ -64,9 +64,12 @@
         </nav>
       </div>
       <div id="page-content" class="page-content" v-bind:class="{ content_compressed: contentIsCompressed }">
-        <TheAccountPage v-if="pages.accountPageVisibility" @openList="openList" />
-        <ThePlaylistPage v-if="pages.playlistPageVisibility" />
+        <TheAccountPage v-if="pages.accountPageVisibility" @openList="openList" @openLink="openLink" />
+        <ThePlaylistPage v-if="pages.playlistPageVisibility" @openList="openList" @openLink="openLink"
+          @openTrack="openTrack" />
         <ThePlaylistsPage v-if="pages.listPageVisibility" />
+        <TheLinkPage v-if="pages.linkPageVisibility" @openPlaylist="openPlaylist" />
+        <TheTrackPage v-if="pages.trackPageVisibility" />
       </div>
     </div>
   </div>
@@ -77,6 +80,8 @@
 import ThePlaylistPage from './components/ThePlaylistPage.vue'
 import TheAccountPage from './components/TheAccountPage.vue'
 import ThePlaylistsPage from './components/ThePlaylistsPage.vue'
+import TheLinkPage from './components/TheLinkPage.vue'
+import TheTrackPage from './components/TheTrackPage.vue'
 
 // import axios from 'axios';
 
@@ -84,7 +89,9 @@ export default {
   components: {
     ThePlaylistPage,
     TheAccountPage,
-    ThePlaylistsPage
+    ThePlaylistsPage,
+    TheLinkPage,
+    TheTrackPage
   },
   data() {
     return {
@@ -116,7 +123,9 @@ export default {
         logoutVisibility: false,
         listPageVisibility: false,
         accountPageVisibility: true,
-        playlistPageVisibility: false
+        playlistPageVisibility: false,
+        linkPageVisibility: false,
+        trackPageVisibility: false
       }
     };
   },
@@ -264,6 +273,19 @@ export default {
         this.pages[page] = false;
       }
       this.pages.listPageVisibility = true;
+    },
+    openLink() {
+      for (let page in this.pages) {
+        this.pages[page] = false;
+      }
+      this.pages.linkPageVisibility = true;
+    },
+    openTrack(name) {
+      console.log(name);
+      for (let page in this.pages) {
+        this.pages[page] = false;
+      }
+      this.pages.trackPageVisibility = true;
     }
   }
 }

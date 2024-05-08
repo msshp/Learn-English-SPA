@@ -211,6 +211,46 @@ input::placeholder {
   overflow: hidden;
 }
 
+.table {
+  margin-top: 32px;
+}
+
+.line {
+  border-radius: 24px;
+  height: 64px;
+  background-color: #EFF0E8;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.line-name {
+  margin: 0 32px;
+  width: 25%;
+  color: #171802;
+}
+
+.line-author {
+  color: #848476;
+  margin-right: 32px;
+  width: 25%;
+  font-weight: 500;
+}
+
+.white {
+  background-color: transparent;
+}
+
+.grey {
+  background-color: #EFF0E8;
+}
+
+.line:hover {
+  background-color: #e7e7df;
+}
+
 @media (max-width: 1840px) {
   .sidenav {
     width: 16%;

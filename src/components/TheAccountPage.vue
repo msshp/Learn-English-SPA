@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="user-buttons">
-                <button>Добавить плейлист</button>
+                <button @click="pressAddPlaylist">Добавить плейлист</button>
                 <button @click="pressList">Все плейлисты</button>
             </div>
         </div>
@@ -44,6 +44,9 @@ export default {
     methods: {
         pressList() {
             this.$emit('openList');
+        },
+        pressAddPlaylist() {
+            this.$emit('openLink');
         }
     },
     mounted() {
