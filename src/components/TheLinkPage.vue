@@ -10,6 +10,9 @@
 </template>
 
 <script>
+
+// import axios from 'axios';
+
 export default {
     data() {
         return {
@@ -17,15 +20,58 @@ export default {
             linkIsEmpty: false
         }
     },
+    props: {
+        userInfo: Object
+    },
     methods: {
         addPlaylist() {
             this.linkIsEmpty = !this.playlistLink || this.playlistLink.trim().length === 0;
 
             if (!this.linkIsEmpty) {
                 console.log('добавить плейлист');
-                this.$emit('openPlaylist');
-            }
+                // axios.post('http://localhost:8765/playlist/playlist/playlists', {
+                //     "username": this.userInfo.name,
+                //     "playlist_url": this.playlistLink
+                // }, {
+                //     headers: {
+                //         'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                //         'Content-Type': 'application/json; charset=utf-8'
+                //     }
+                // }).then((response) => {
+                //     if (response.status === 201) { // если успешно
+                //         console.log(response.data);
 
+                this.$emit('openPlaylist', { // вставить ответ от сервера (объект с инфой о плейлисте)
+                    "id": "254306981:1017",
+                    "title": "debug matveezy",
+                    "progress": 30,
+                    "tracks": [
+                        {
+                            "id": "112047068:25129938",
+                            "authors": [
+                                "FENDIGLOCK"
+                            ],
+                            "title": "Памятник",
+                            "content_warning": "explicit",
+                            "lyrics_count": 35
+                        },
+                        {
+                            "id": "4214:4241617",
+                            "authors": [
+                                "50 Cent"
+                            ],
+                            "title": "Just A Lil Bit",
+                            "content_warning": "explicit",
+                            "lyrics_count": 74
+                        }
+                    ]
+                }
+                );
+                //     }
+                // }).catch((error) => {
+                //     console.log(error);
+                // });
+            }
         }
     }
 }

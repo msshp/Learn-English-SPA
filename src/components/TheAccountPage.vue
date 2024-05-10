@@ -4,7 +4,7 @@
             <div class="user-info">
                 <div class="user-photo"></div>
                 <div class="user-info__text">
-                    <p class="user-info__text-name">{{ userInfo.name }}</p>
+                    <p class="user-info__text-name">{{ userInfo.username }}</p>
                     <div class="user-info__text-add">
                         <span>{{ userInfo.age }}</span>
                         <div class="separator"></div><span>{{ userInfo.email }}</span>
@@ -21,7 +21,7 @@
             <p>Продолжайте в том же духе!</p>
         </div>
         <div class="progress-container">
-            <div class="progress-value">прогресс<div>{{ userInfo.progress }}%</div>
+            <div class="progress-value">прогресс<div>{{ userInfo.user_summary_progress }}%</div>
             </div>
             <input class="slider-wrapper slider-progress" id="progress" type="range" min="0" max="100" disabled />
         </div>
@@ -30,16 +30,16 @@
 
 <script>
 
+// import axios from 'axios';
+
 export default {
     data() {
         return {
-            userInfo: {
-                name: 'Username',
-                age: 22,
-                email: 'email@gmail.ru',
-                progress: 63
-            }
+            shift: 12
         }
+    },
+    props: {
+        userInfo: Object
     },
     methods: {
         pressList() {
@@ -50,15 +50,27 @@ export default {
         }
     },
     mounted() {
-        // Получить элемент input
+        // PROGRESS
         const progressInput = document.getElementById('progress');
         // Установить значение из data() в атрибут value элемента input
-        progressInput.value = this.userInfo.progress;
+        progressInput.value = Number(this.userInfo.user_summary_progress);
 
         progressInput.style.setProperty('background', `-webkit-linear-gradient(left, #DDEA4D 0%, #DDEA4D ${progressInput.value}%, #E6E7DF ${progressInput.value}%, #E6E7DF 100%)`, 'important');
 
+        if (progressInput.value < 4) {
+            this.shift = -4
+        } else if (progressInput.value < 10) {
+            this.shift = 0
+        } else if (progressInput.value < 20) {
+            this.shift = 5
+        } else if (progressInput.value > 91) {
+            this.shift = 20
+        } else if (progressInput.value > 101) {
+            this.shift = 30
+        }
+
         let progressValue = document.querySelector('.progress-value');
-        progressValue.style.marginLeft = `${progressInput.value - 12}%`;
+        progressValue.style.marginLeft = `${progressInput.value - this.shift}%`;
     }
 }
 </script>

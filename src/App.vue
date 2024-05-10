@@ -64,11 +64,12 @@
         </nav>
       </div>
       <div id="page-content" class="page-content" v-bind:class="{ content_compressed: contentIsCompressed }">
-        <TheAccountPage v-if="pages.accountPageVisibility" @openList="openList" @openLink="openLink" />
+        <TheAccountPage v-if="pages.accountPageVisibility" @openList="openList" @openLink="openLink"
+          :userInfo="userInfo" />
         <ThePlaylistPage v-if="pages.playlistPageVisibility" @openList="openList" @openLink="openLink"
-          @openTrack="openTrack" />
+          @openTrack="openTrack" :playlistStorage="playlistStorage" />
         <ThePlaylistsPage v-if="pages.listPageVisibility" />
-        <TheLinkPage v-if="pages.linkPageVisibility" @openPlaylist="openPlaylist" />
+        <TheLinkPage v-if="pages.linkPageVisibility" @openPlaylist="openPlaylist" :userInfo="userInfo" />
         <TheTrackPage v-if="pages.trackPageVisibility" />
       </div>
     </div>
@@ -126,6 +127,48 @@ export default {
         playlistPageVisibility: false,
         linkPageVisibility: false,
         trackPageVisibility: false
+      },
+
+      userInfo: {
+        "username": "matveezy",
+        "email": "matveezy@yandex.ru",
+        "age": 21,
+        "playlists": [
+          {
+            "yandexPlaylistId": "254306981:1017",
+            "title": "debug matveezy",
+            "playlist_progress": 0.0
+          }
+        ],
+        "user_summary_progress": 0.0
+      },
+
+      playlistStorage: { // сохранение информации об одном плейлисте (для страницы одного плейлиста)
+        "id": "254306981:1017",
+        "title": "debug matveezy",
+        "progress": 30,
+        "tracks": [
+          {
+            "id": "112047068:25129938",
+            "authors": [
+              "FENDIGLOCK"
+            ],
+            "title": "Памятник",
+            "content_warning": "explicit",
+            "lyrics_count": 35,
+            "year": 2000
+          },
+          {
+            "id": "4214:4241617",
+            "authors": [
+              "50 Cent"
+            ],
+            "title": "Just A Lil Bit",
+            "content_warning": "explicit",
+            "lyrics_count": 74,
+            "year": 2000
+          }
+        ]
       }
     };
   },
@@ -146,32 +189,31 @@ export default {
     },
     createAccountPost() {
       console.log('регистрация')
-      // to do
-      // axios.post('{{GATEWAY_URL}}/auth/auth/register',
-      //     {
-      //         "username": this.projUserLogin,
-      //         "password": this.projUserPass,
-      //         "email": this.projUserEmail,
-      //         "age": this.projUserAge
-      //     }, {
-      //     headers: {
-      //         'Content-Type': 'application/json'
-      //     }
+      // axios.post('http://localhost:8765/auth/auth/register',
+      //   {
+      //     "username": this.projUserName,
+      //     "password": this.projUserPass,
+      //     "email": this.projUserEmail,
+      //     "age": this.projUserAge
+      //   }, {
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   }
       // }).then((response) => { // обработка ошибок
-      //     if (response.status === 201) {
-      this.regMessageVisibility = true;
-      this.projUserEmail = '';
-      this.projUserAge = '';
-      this.projUserName = '';
-      this.projUserPass = '';
-      //     } else if (response.status === 400) {
-      //         this.errorMessageVisibility = true;
-      //     } else {
-      //         this.errorMessageVisibility = true;
-      //     }
-      // }).catch((error) => {
-      //     console.log(error);
+      //   if (response.status === 201) { // успешно 
+      //     this.regMessageVisibility = true;
+      //     this.projUserEmail = '';
+      //     this.projUserAge = '';
+      //     this.projUserName = '';
+      //     this.projUserPass = '';
+      //   } else if (response.status === 400) {
       //     this.errorMessageVisibility = true;
+      //   } else {
+      //     this.errorMessageVisibility = true;
+      //   }
+      // }).catch((error) => {
+      //   console.log(error);
+      //   this.errorMessageVisibility = true;
       // });
 
       this.regFormVisibility = false;
@@ -208,28 +250,20 @@ export default {
       this.userPassIsEmpty = !this.userPass || this.userPass.trim().length === 0;
 
       if (!this.userNameIsEmpty && !this.userPassIsEmpty) {
-
-        // to do
-        // axios.post('{{GATEWAY_URL}}/auth/auth/authenticate', {
-        //     "username": this.userName,
-        //     "password": this.userPass
+        // axios.post('http://localhost:8765/auth/auth/authenticate', {
+        //   "username": this.userName,
+        //   "password": this.userPass
         // }, {
-        //     headers: {
-        //         'Content-Type': 'application/json; charset=utf-8'
-        //     }
+        //   headers: {
+        //     'Content-Type': 'application/json; charset=utf-8'
+        //   }
         // }).then((response) => {
-        //     if (response.status === 200) {
-        //         sessionStorage.setItem('token', response.data.auth_token);
-        this.drawLogIn(); // если успешно
-        //     } else if (response.status === 400) {
-        //         this.drawErrorLogIn();
-        //     } else {
-        //         this.drawErrorLogIn();
-        //     }
+        //   if (response.status === 201) { // если успешно
+        //     sessionStorage.setItem('token', response.data.token); // сохранение токена в sessionStorage
+        this.drawLogIn(); // переход в приложение
+        //   }
         // }).catch((error) => {
-        //     // this.errorLoginMessage = `${error.response.data.non_field_errors}`;
-        //     this.errorLoginMessage = `Ошибка ${error.response.status}`;
-        //     this.drawErrorLogIn();
+        //   console.log(error);
         // });
       }
     },
@@ -248,15 +282,26 @@ export default {
 
       this.pages.accountPageVisibility = true;
     },
-    drawLogIn() {
+    drawLogIn() { // получить информацию о пользователе
+      console.log('получить информацию о пользователе')
+      // axios.get(`http://localhost:8765/api/users/${this.userName}`,
+      //   {
+      //     headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` },
+      //   }).then((response) => { // обработка успешного запроса
+      //     this.userInfo = response.data;
+
       this.mainPageVisibility = true;
       this.loginPageVisibility = false;
+      // }).catch((error) => { // обработка ошибки
+      //   console.log(error);
+      // })
     },
     sidenavToggle() {
       this.sidenavIsHidden = !this.sidenavIsHidden;
       this.contentIsCompressed = !this.contentIsCompressed;
     },
-    openPlaylist() {
+    openPlaylist(playlistStorage) {
+      this.playlistStorage = playlistStorage;
       for (let page in this.pages) {
         this.pages[page] = false;
       }
