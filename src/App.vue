@@ -51,11 +51,10 @@
               <div class="icon-playlists" v-bind:class="{ iconproj_active: pages.listPageVisibility }">
               </div>Плейлисты
             </button>
-            <button class="playlist" @click="openPlaylist()"
-              v-bind:class="{ sidebtn_active: pages.playlistPageVisibility }">
-              <div class="icon-personal-area"
-                v-bind:class="{ icon_personal_area_active: pages.playlistPageVisibility }">
-              </div>Плейлист-1
+            <button class="playlist" v-for="playlist in userInfo.playlists" :key="playlist"
+              @click="openPlaylist(playlist)">
+              <div class="icon-one-playlist">
+              </div>{{ playlist.title }}
             </button>
           </div>
           <button id="sidenav__logout" @click="logOut()" v-bind:class="{ sidebtn_active: pages.logoutVisibility }">
@@ -70,7 +69,7 @@
           @openTrack="openTrack" :playlistStorage="playlistStorage" />
         <ThePlaylistsPage v-if="pages.listPageVisibility" />
         <TheLinkPage v-if="pages.linkPageVisibility" @openPlaylist="openPlaylist" :userInfo="userInfo" />
-        <TheTrackPage v-if="pages.trackPageVisibility" />
+        <TheTrackPage v-if="pages.trackPageVisibility" @openPlaylist="openPlaylist" @openList="openList" />
       </div>
     </div>
   </div>
@@ -137,6 +136,11 @@ export default {
           {
             "yandexPlaylistId": "254306981:1017",
             "title": "debug matveezy",
+            "playlist_progress": 0.0
+          },
+          {
+            "yandexPlaylistId": "254306981:1017",
+            "title": "debug mat",
             "playlist_progress": 0.0
           }
         ],

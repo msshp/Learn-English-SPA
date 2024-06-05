@@ -194,7 +194,7 @@ input::placeholder {
   background-image: url(../img/sidenav/logout.svg);
 }
 
-.icon-personal-area {
+.icon-one-playlist {
   background-image: url(../img/sidenav/playlist.svg);
 }
 
@@ -249,6 +249,14 @@ input::placeholder {
 
 .line:hover {
   background-color: #e7e7df;
+}
+
+.track-exercise__play {
+  background-image: url(../img/play.svg);
+  width: 48px;
+  height: 48px;
+  margin-right: 16px;
+  cursor: pointer;
 }
 
 @media (max-width: 1840px) {

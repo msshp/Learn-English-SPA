@@ -17,8 +17,13 @@
                 @click="openTrackPage(track.title)" :class="index % 2 === 0 ? 'grey' : 'white'">
                 <div class="line-name">{{ track.title }}</div>
                 <div class="line-author">{{ track.authors[0] }}</div>
-                <div class="line-author">{{ track.year }}</div>
             </div>
+        </div>
+        <div class="progress-container progress-container-playlist">
+            <div class="progress-value-playlist">прогресс<div>{{ playlistInfo.progress }}%</div>
+            </div>
+            <input class="slider-wrapper slider-progress" id="progress-playlist" type="range" min="0" max="100"
+                disabled />
         </div>
     </div>
 </template>
@@ -33,20 +38,16 @@ export default {
             //     storage: [
             //         {
             //             name: 'Enjoy the Silence',
-            //             author: 'Depeche Mode',
-            //             year: '1990'
+            //             author: 'Depeche Mode'
             //         }, {
             //             name: 'Enjoy the Silence',
-            //             author: 'Depeche Mode',
-            //             year: '1990'
+            //             author: 'Depeche Mode'
             //         }, {
             //             name: 'Enjoy the Silence',
-            //             author: 'Depeche Mode',
-            //             year: '1990'
+            //             author: 'Depeche Mode'
             //         }, {
             //             name: 'Enjoy the Silence',
-            //             author: 'Depeche Mode',
-            //             year: '1990'
+            //             author: 'Depeche Mode'
             //         }
             //     ]
             // },
@@ -62,8 +63,7 @@ export default {
                         ],
                         "title": "Памятник",
                         "content_warning": "explicit",
-                        "lyrics_count": 35,
-                        "year": 2000
+                        "lyrics_count": 35
                     },
                     {
                         "id": "4214:4241617",
@@ -72,11 +72,11 @@ export default {
                         ],
                         "title": "Just A Lil Bit",
                         "content_warning": "explicit",
-                        "lyrics_count": 74,
-                        "year": 2000
+                        "lyrics_count": 74
                     }
                 ]
-            }
+            },
+            shift: 12
         }
     },
     props: {
@@ -94,8 +94,61 @@ export default {
         }
     },
     mounted() {
-        console.log(this.playlistStorage);
         this.playlistInfo = this.playlistStorage; // сохранение информации в локальное хранилище компонента
+
+        // PROGRESS
+        const progressInput = document.getElementById('progress-playlist');
+        // Установить значение из data() в атрибут value элемента input
+        progressInput.value = Number(this.playlistInfo.progress);
+
+        progressInput.style.setProperty('background', `-webkit-linear-gradient(left, #DDEA4D 0%, #DDEA4D ${progressInput.value}%, #E6E7DF ${progressInput.value}%, #E6E7DF 100%)`, 'important');
+
+        if (progressInput.value < 4) {
+            this.shift = -4
+        } else if (progressInput.value < 10) {
+            this.shift = 0
+        } else if (progressInput.value < 20) {
+            this.shift = 5
+        } else if (progressInput.value > 91) {
+            this.shift = 20
+        } else if (progressInput.value > 101) {
+            this.shift = 30
+        }
+
+        let progressValue = document.querySelector('.progress-value-playlist');
+        progressValue.style.marginLeft = `${progressInput.value - this.shift}%`;
     }
 }
 </script>
+
+<style>
+#progress-playlist {
+    width: 90%;
+    margin: 0 48px;
+}
+
+.progress-value-playlist {
+    border-radius: 24px;
+    width: 220px;
+    height: 48px;
+    background: #DDEA4D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    font-family: 'Open Sans';
+    font-weight: 400;
+    font-size: 20px;
+    color: #171802;
+}
+
+.progress-value-playlist div {
+    margin-left: 8px;
+    margin-top: 5px;
+    font-family: 'RockStar';
+}
+
+.progress-container-playlist {
+    margin-top: 24px;
+}
+</style>
